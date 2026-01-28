@@ -1,12 +1,31 @@
 import { Monitor, Moon, Sun } from "lucide-react";
-import { useSetting, useSettingAction } from "../context/setting/useSetting";
 import { twMerge } from "tailwind-merge";
 import useTranslation from "../libs/useTranslation";
+import { RootState } from "../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { updateColorScheme } from "../store/features/setting/settingSlice";
+import { useLayoutEffect } from "react";
 
 export default function ThemeSetting() {
-  const { preferences } = useSetting();
-  const { updateColorScheme } = useSettingAction();
+  const colorScheme = useSelector(
+    (state: RootState) => state.setting.colorScheme,
+  );
+  const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  useLayoutEffect(() => {
+    if (colorScheme === "system") {
+      document.documentElement.classList.remove("light", "dark");
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.add("light");
+      }
+    } else {
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(colorScheme);
+    }
+  }, [colorScheme]);
 
   return (
     <>
@@ -23,11 +42,11 @@ export default function ThemeSetting() {
               key={scheme}
               className={twMerge(
                 "flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                preferences.colorScheme === scheme
+                colorScheme === scheme
                   ? "bg-blue-500 text-white"
                   : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600",
               )}
-              onClick={() => updateColorScheme(scheme)}
+              onClick={() => dispatch(updateColorScheme(scheme))}
             >
               {scheme === "system" ? (
                 <>

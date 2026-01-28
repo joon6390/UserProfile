@@ -1,12 +1,23 @@
 import { Type } from "lucide-react";
-import { useSettingAction, useSetting } from "../context/setting/useSetting";
 import { twMerge } from "tailwind-merge";
 import useTranslation from "../libs/useTranslation";
+import { RootState } from "../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { updateFontSize } from "../store/features/setting/settingSlice";
+import { useLayoutEffect } from "react";
 
 export default function FontSizeSetting() {
-  const { preferences } = useSetting();
-  const { updateFontSize } = useSettingAction();
+  const fontSize = useSelector((state: RootState) => state.setting.fontSize);
+  const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  useLayoutEffect(() => {
+    document.documentElement.style.fontSize = {
+      small: "14px",
+      medium: "16px",
+      large: "18px",
+    }[fontSize];
+  }, [fontSize]);
 
   return (
     <>
@@ -24,11 +35,11 @@ export default function FontSizeSetting() {
               key={size}
               className={twMerge(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                preferences.fontSize === size
+                fontSize === size
                   ? "bg-blue-500 text-white "
                   : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600",
               )}
-              onClick={() => updateFontSize(size)}
+              onClick={() => dispatch(updateFontSize(size))}
             >
               {size === "small"
                 ? t.fontSize.small
