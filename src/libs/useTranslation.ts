@@ -1,9 +1,8 @@
-import { useSelector } from "react-redux";
+import { useSettingStore } from "../store/settingStore";
 import { SupportedLanguage, translations } from "./i18n";
-import { RootState } from "../store/store";
 
 export default function useTranslation() {
-  const language = useSelector((state: RootState) => state.setting.language);
+  const language = useSettingStore((state) => state.language);
   const lang = language as SupportedLanguage;
   const t = translations[lang];
   return { t, lang };

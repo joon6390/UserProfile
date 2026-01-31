@@ -9,11 +9,7 @@ interface UserPreferences {
   colorScheme: "system" | "light" | "dark";
 }
 
-interface ContextTypePreferences {
-  preferences: UserPreferences;
-}
-
-interface ContextActionTypePreferences {
+interface ActionTypePreferences {
   updateLanguage: (language: UserPreferences["language"]) => void;
   updateFontSize: (size: UserPreferences["fontSize"]) => void;
   updateNotifications: (
